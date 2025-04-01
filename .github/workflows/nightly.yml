@@ -1,0 +1,39 @@
+name: Build
+on:
+  schedule:
+    - cron: "0 1 * * *"
+  push: 
+    branches:
+      - main
+  workflow_dispatch:
+concurrency:
+  group: nightly
+permissions:
+  contents: write
+  packages: write
+jobs:
+  fmt: 
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Format
+        run: cargo fmt --all -- --check
+      - name: Lint
+        run: cargo clippy --all-targets --all-features -- -D warnings
+  build:
+    runs-on: ubuntu-24.04
+    needs: fmt
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Test
+        run: cargo test
+      - name: Build
+        run: cargo build --release
+      - name: Upload CLI as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cli
+          path: target/x86_64-unknown-linux-gnu/release/bsan-eval
+

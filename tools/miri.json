@@ -1,0 +1,10 @@
+{
+    "name": "Miri (Retag=@{1})",
+    "rustflags":["-Zmiri-tree-borrows", "-Zmiri-disable-data-race-detector", "-Zmiri-retag-fields=@{1}"],
+    "cflags": [""],
+    "cxxflags": [""],
+    "cargo_wrapper": "miri",
+    "variables": {
+        "1": ["none", "all", "scalar"]
+    }
+}
