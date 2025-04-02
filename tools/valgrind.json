@@ -1,14 +1,17 @@
 {
-    "name": "@^{1}",
-    "rustflags":[],
-    "cflags": [],
-    "cxxflags": [],
+    "name": "Valgrind",
     "cargo_wrapper": "valgrind",
     "wrapper": "valgrind",
-    "wrapperflags": ["--tool=@{1}"],
-    "execflags": [],
-    "variables": {
-        "1": ["nulgrind", "memcheck"]
+    "mode": {
+        "nulgrind": {
+            "wrapper_flags": [
+                "--tool=nulgrind"
+            ]
+        },
+        "memcheck": {
+            "wrapper_flags": [
+                "--tool=memcheck"
+            ]
+        }
     }
 }
-

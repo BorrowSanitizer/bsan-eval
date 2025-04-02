@@ -1,35 +1,31 @@
-use std::{fs, path::PathBuf};
+use std::path::PathBuf;
 static TOOL_DIR: &str = "tools";
-
+use serde_json::Result;
 mod tool;
+mod utils;
+
 fn main() {
     let _args = std::env::args();
     let json_dir = PathBuf::from(TOOL_DIR);
-    collect_json_files(&json_dir).iter().for_each(|json_file| {
-        let data = fs::read_to_string(json_file).unwrap();
-        match tool::compile_tool(data) {
-            Ok(tools) => {
-                for tool in tools {
-                    println!("{:?}", tool);
-                }
-            }
-            Err(e) => eprintln!("Error parsing JSON: {}", e),
-        }
-    });
-}
 
-fn collect_json_files(path: &PathBuf) -> Vec<PathBuf> {
-    fs::read_dir(path)
+    let json_files = utils::collect_json_files(&json_dir);
+    if json_files.is_err() {
+        eprintln!("Error collecting JSON files: {:?}", json_files.err());
+        return;
+    }
+
+    let tools = json_files
         .unwrap()
-        .filter_map(|entry| {
-            entry.map_or(None, |e| {
-                let path = e.path();
-                if path.extension().and_then(|s| s.to_str()) == Some("json") {
-                    Some(path)
-                } else {
-                    None
-                }
-            })
-        })
-        .collect()
+        .drain(..)
+        .map(tool::compile_tools)
+        .collect::<Vec<Result<_>>>();
+
+    let (errs, tools): (Vec<_>, Vec<_>) = tools.into_iter().partition(|t| t.is_err());
+
+    if !errs.is_empty() {
+        for err in errs {
+            eprintln!("Error compiling tool: {:?}", err.err());
+        }
+    }
+    let _ = tools.iter().flatten().flatten().collect::<Vec<_>>();
 }

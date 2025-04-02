@@ -1,9 +1,0 @@
-{
-    "name": "@^{1}Sanitizer",
-    "rustflags":["-Zsanitize=@{1}"],
-    "cflags": ["-fsanitize=@{1}"],
-    "cxxflags": ["-fsanitize=@{1}"],
-    "variables": {
-        "1": ["thread", "address", "memory"]
-    }
-}

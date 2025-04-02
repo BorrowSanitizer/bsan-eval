@@ -1,0 +1,13 @@
+{
+    "name": "MSAN ()",
+    "mode" : {
+        "default": {
+            "rustflags": ["-Zsanitizer=address"],
+            "cflags": ["-fsanitize=address"],
+            "cxxflags": ["-fsanitize=address"]
+        },
+        "retval": {
+            "cflags": ["-fno-sanitize-memory-param-retval"]
+        }
+    }
+}

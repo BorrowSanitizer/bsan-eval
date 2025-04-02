@@ -1,0 +1,19 @@
+{
+    "name": "ASAN",
+    "mode": {
+        "default": {
+            "rustflags": [
+                "-Zsanitizer=address"
+            ],
+            "cflags": [
+                "-fsanitize=address",
+                "-fno-common"
+            ],
+            "cxxflags": [
+                "-fsanitize=address",
+                "-fno-common"
+            ]
+        }
+        
+    }
+}
